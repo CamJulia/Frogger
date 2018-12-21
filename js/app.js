@@ -6,9 +6,10 @@ let downPressed = false;
 let upPressed = false;
 
 // Enemies our player must avoid
-var Enemy = function (road) {
-    this.x = 0;
-    this.y = (60 * road);
+var Enemy = function (lane, start, fast) {
+    this.x = start;
+    this.y = lane;
+    this.fast = fast;
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
@@ -21,7 +22,11 @@ var Enemy = function (road) {
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function (dt) {
-
+    if (this.x < 500) {
+    this.x = this.x + this.fast;
+    } else {
+        this.x = -100;
+    }
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
@@ -63,9 +68,9 @@ Player.prototype.render = function () {
 };
 
 // create enemy 1
-let enemy1 = new Enemy(1);
-let enemy2 = new Enemy(2.4);
-let enemy3 = new Enemy(3.8);
+let enemy1 = new Enemy(55, -100, 5);
+let enemy2 = new Enemy(140, - 200, 3);
+let enemy3 = new Enemy(225, -50, 4);
 // put it in the allEnemies Array
 allEnemies.push(enemy1);
 allEnemies.push(enemy2);
