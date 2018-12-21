@@ -9,7 +9,9 @@ let rounds = 0;
 const hearts = document.getElementById('hearts');
 const roundsOutput = document.getElementById('rounds');
 
-// Enemies our player must avoid
+showLife();
+
+// Enemies
 let Enemy = function (lane, start, fast) {
     this.x = start;
     this.y = lane;
@@ -87,6 +89,10 @@ player = new Player();
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
+// play again after game over
+let again = document.getElementById('again');
+again.addEventListener("click", reload);
+
 // keys are pressed
 function keyDownHandler(e) {
     if (e.keyCode == 39) {
@@ -115,7 +121,7 @@ function keyUpHandler(e) {
 
 // in case of win
 function win() {
-    rounds += 1;
+    rounds++;
     player.y = 400;
     player.x = 200;
     hurryBug();
@@ -127,8 +133,24 @@ function collisionDetection() {
     for (let i = 0; i < allEnemies.length; i++) {
         let hit = allEnemies[i];
         if (player.x + player.width > hit.x && player.x - player.width < hit.x + hit.width && player.y + player.height > hit.y && player.y - player.height < hit.y + hit.height) {
+            // set player back to first position
             player.x = 200;
             player.y = 400;
+            // take one life
+            lifes = lifes - 1;
+            showLife();
+            // show win card when 100 rounds are reached
+            if (lifes === 100) {
+                winOn();
+            }
+            //  game over alert
+            if (lifes === 0) {
+                overlayOn('game-over');
+            }
+            // ask player to go outside when 100 rounds are played
+            if (lifes === 100) {
+                overlayOn('win');
+            }
         }
     }
 }
@@ -138,4 +160,30 @@ function hurryBug() {
     for (let i = 0; i < allEnemies.length; i++) {
         let hit = allEnemies[i];
         hit.fast += 1;
-    }}
+    }
+}
+
+// show how many lifes are left
+function showLife() {
+    hearts.innerHTML = '';
+    for (let i = 0; i < lifes; i++) {
+        let heartsLeft = document.createElement('img');
+        heartsLeft.setAttribute('src', 'images/Heart.png');
+        hearts.appendChild(heartsLeft);
+    }
+}
+
+// show win card
+function overlayOn(id) {
+    document.getElementById(id).style.display = "block";
+}
+
+// hide win card
+function overlayOff(id) {
+    document.getElementById(id).style.display = "none";
+}
+
+// reload page
+function reload() {
+    document.location.reload();
+}
