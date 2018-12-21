@@ -50,14 +50,14 @@ Player.prototype.update = function () {
 Player.prototype.render = function () {
     Resources.load(this.sprite)
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    if (rightPressed) {
-        player.x += 7;
-    } else if (leftPressed) {
-        player.x -= 7;
-    } else if (upPressed) {
-        player.y -= 7;
-    } else if (downPressed) {
-        player.y += 7;
+    if (rightPressed && player.x < 410) {
+        player.x += 5;
+    } else if (leftPressed && player.x > 0) {
+        player.x -= 5;
+    } else if (upPressed && player.y > -30) {
+        player.y -= 5;
+    } else if (downPressed && player.y < 400) {
+        player.y += 5;
     }
 
 };
