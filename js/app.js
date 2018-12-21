@@ -93,6 +93,10 @@ document.addEventListener("keyup", keyUpHandler, false);
 let again = document.getElementById('again');
 again.addEventListener("click", reload);
 
+// play some more after 50, 100... games
+ let more = document.getElementById('more');
+ more.addEventListener("click", overlayOff);
+
 // keys are pressed
 function keyDownHandler(e) {
     if (e.keyCode == 39) {
@@ -122,10 +126,15 @@ function keyUpHandler(e) {
 // in case of win
 function win() {
     rounds++;
+    roundsOutput.textContent = rounds;
+
+    // ask player to go outside when 50 rounds are played
+    if (rounds > 0 && (rounds % 50) === 0) {
+        overlayOn('win');  
+    }
     player.y = 400;
     player.x = 200;
     hurryBug();
-    roundsOutput.textContent = rounds;
 }
 
 // checks if player is hit
@@ -133,24 +142,19 @@ function collisionDetection() {
     for (let i = 0; i < allEnemies.length; i++) {
         let hit = allEnemies[i];
         if (player.x + player.width > hit.x && player.x - player.width < hit.x + hit.width && player.y + player.height > hit.y && player.y - player.height < hit.y + hit.height) {
-            // set player back to first position
-            player.x = 200;
-            player.y = 400;
+
             // take one life
             lifes = lifes - 1;
             showLife();
-            // show win card when 100 rounds are reached
-            if (lifes === 100) {
-                winOn();
-            }
+
             //  game over alert
             if (lifes === 0) {
                 overlayOn('game-over');
             }
-            // ask player to go outside when 100 rounds are played
-            if (lifes === 100) {
-                overlayOn('win');
-            }
+
+            // set player back to first position
+            player.x = 200;
+            player.y = 400;
         }
     }
 }
@@ -173,14 +177,16 @@ function showLife() {
     }
 }
 
-// show win card
+// show overlay
 function overlayOn(id) {
+    console.log("ON");
     document.getElementById(id).style.display = "block";
 }
 
-// hide win card
-function overlayOff(id) {
-    document.getElementById(id).style.display = "none";
+// hide overlay
+function overlayOff() {
+    console.log("OFF");
+    document.getElementById('win').style.display = "none";
 }
 
 // reload page
