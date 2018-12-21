@@ -1,5 +1,9 @@
 let player;
 let allEnemies = [];
+let rightPressed = false;
+let leftPressed = false;
+let downPressed = false;
+let upPressed = false;
 
 // Enemies our player must avoid
 var Enemy = function (road) {
@@ -7,8 +11,8 @@ var Enemy = function (road) {
     this.y = (60 * road);
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
-    
-    
+
+
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
@@ -17,7 +21,7 @@ var Enemy = function (road) {
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function (dt) {
-    
+
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
@@ -36,30 +40,26 @@ let Player = function () {
 
 }
 
-Player.handleInput = function (direction) {
-    if (direction = 37) {
-        this.x = this.x -20;
-    }
-    if (direction = 38) {
-        this.y = this.y -20;
-    }
-    if (direction = 39) {
-        this.x = this.x + 20;
-    }
-    if (direction = 40) {
-        this.y = this.y + 20;
-    }
-}
 // This class requires an update(), render() and
 // a handleInput() method.
 
 Player.prototype.update = function () {
-    
+
 }
 
 Player.prototype.render = function () {
     Resources.load(this.sprite)
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    if (rightPressed) {
+        player.x += 7;
+    } else if (leftPressed) {
+        player.x -= 7;
+    } else if (upPressed) {
+        player.y -= 7;
+    } else if (downPressed) {
+        player.y += 7;
+    }
+
 };
 
 // create enemy 1
@@ -76,13 +76,40 @@ player = new Player();
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
-document.addEventListener('keyup', function (e) {
-    var allowedKeys = {
-        37: 'left',
-        38: 'up',
-        39: 'right',
-        40: 'down'
-    };
+// document.addEventListener('keyup', function (e) {
+//     var allowedKeys = {
+//         37: 'left',
+//         38: 'up',
+//         39: 'right',
+//         40: 'down'
+//     };
 
-    player.handleInput(allowedKeys[e.keyCode]);
-});
+//     player.handleInput(allowedKeys[e.keyCode]);
+// });
+
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+
+function keyDownHandler(e) {
+    if (e.keyCode == 39) {
+        rightPressed = true;
+    } else if (e.keyCode == 37) {
+        leftPressed = true;
+    } else if (e.keyCode == 38) {
+        upPressed = true;
+    } else if (e.keyCode == 40) {
+        downPressed = true;
+    }
+}
+
+function keyUpHandler(e) {
+    if (e.keyCode == 39) {
+        rightPressed = false;
+    } else if (e.keyCode == 37) {
+        leftPressed = false;
+    } else if (e.keyCode == 38) {
+        upPressed = false;
+    } else if (e.keyCode == 40) {
+        downPressed = false;
+    }
+}
