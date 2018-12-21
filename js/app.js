@@ -4,21 +4,18 @@ let rightPressed = false;
 let leftPressed = false;
 let downPressed = false;
 let upPressed = false;
+let lifes = 3;
+let rounds = 0;
+const hearts = document.getElementById('hearts');
+const roundsOutput = document.getElementById('rounds');
 
 // Enemies our player must avoid
-var Enemy = function (lane, start, fast) {
+let Enemy = function (lane, start, fast) {
     this.x = start;
     this.y = lane;
     this.fast = fast;
     this.height = 25;
     this.width = 45;
-
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
-
-
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
 };
 
@@ -35,12 +32,12 @@ Enemy.prototype.update = function (dt) {
     // all computers.
 };
 
-// Draw the enemy on the screen, required method for game
+// draw enemy
 Enemy.prototype.render = function () {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Now write your own player class
+// Player
 let Player = function () {
     this.sprite = 'images/char-cat-girl.png';
     this.x = 200;
@@ -49,16 +46,8 @@ let Player = function () {
     this.height = 45;
 }
 
-// This class requires an update(), render() and
-// a handleInput() method.
-
+// move the player around
 Player.prototype.update = function () {
-
-}
-
-Player.prototype.render = function () {
-    Resources.load(this.sprite)
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     if (rightPressed && player.x < 410) {
         player.x += 5;
     } else if (leftPressed && player.x > 0) {
@@ -68,14 +57,25 @@ Player.prototype.render = function () {
     } else if (downPressed && player.y < 400) {
         player.y += 5;
     }
+    // check if player is hit
     collisionDetection();
-};
+    if (player.y === -30) {
+        win();
+    }
+}
+
+// draw player
+Player.prototype.render = function () {
+    Resources.load(this.sprite)
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
 
 // create enemies
 let enemy1 = new Enemy(55, -100, 5);
 let enemy2 = new Enemy(140, -200, 3);
 let enemy3 = new Enemy(225, -50, 4);
-// put it in the allEnemies Array
+
+// put them in the allEnemies Array
 allEnemies.push(enemy1);
 allEnemies.push(enemy2);
 allEnemies.push(enemy3);
@@ -83,22 +83,11 @@ allEnemies.push(enemy3);
 // Place the player object in a variable called player
 player = new Player();
 
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
-// document.addEventListener('keyup', function (e) {
-//     var allowedKeys = {
-//         37: 'left',
-//         38: 'up',
-//         39: 'right',
-//         40: 'down'
-//     };
-
-//     player.handleInput(allowedKeys[e.keyCode]);
-// });
-
+// listen for keyboard events
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
+// keys are pressed
 function keyDownHandler(e) {
     if (e.keyCode == 39) {
         rightPressed = true;
@@ -111,6 +100,7 @@ function keyDownHandler(e) {
     }
 }
 
+// keys are not pressed anymore
 function keyUpHandler(e) {
     if (e.keyCode == 39) {
         rightPressed = false;
@@ -123,6 +113,15 @@ function keyUpHandler(e) {
     }
 }
 
+// in case of win
+function win() {
+    rounds += 1;
+    player.y = 400;
+    player.x = 200;
+    roundsOutput.textContent = rounds;
+}
+
+// checks if player is hit
 function collisionDetection() {
     for (let i = 0; i < allEnemies.length; i++) {
         let hit = allEnemies[i];
@@ -130,4 +129,5 @@ function collisionDetection() {
             player.x = 200;
             player.y = 400;
         }
-}}
+    }
+}
