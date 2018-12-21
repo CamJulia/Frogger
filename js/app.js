@@ -10,6 +10,9 @@ var Enemy = function (lane, start, fast) {
     this.x = start;
     this.y = lane;
     this.fast = fast;
+    this.height = 25;
+    this.width = 45;
+
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
@@ -23,7 +26,7 @@ var Enemy = function (lane, start, fast) {
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function (dt) {
     if (this.x < 500) {
-    this.x = this.x + this.fast;
+        this.x = this.x + this.fast;
     } else {
         this.x = -100;
     }
@@ -42,7 +45,8 @@ let Player = function () {
     this.sprite = 'images/char-cat-girl.png';
     this.x = 200;
     this.y = 400;
-
+    this.width = 25;
+    this.height = 45;
 }
 
 // This class requires an update(), render() and
@@ -64,12 +68,12 @@ Player.prototype.render = function () {
     } else if (downPressed && player.y < 400) {
         player.y += 5;
     }
-
+    collisionDetection();
 };
 
-// create enemy 1
+// create enemies
 let enemy1 = new Enemy(55, -100, 5);
-let enemy2 = new Enemy(140, - 200, 3);
+let enemy2 = new Enemy(140, -200, 3);
 let enemy3 = new Enemy(225, -50, 4);
 // put it in the allEnemies Array
 allEnemies.push(enemy1);
@@ -118,3 +122,12 @@ function keyUpHandler(e) {
         downPressed = false;
     }
 }
+
+function collisionDetection() {
+    for (let i = 0; i < allEnemies.length; i++) {
+        let hit = allEnemies[i];
+        if (player.x + player.width > hit.x && player.x - player.width < hit.x + hit.width && player.y + player.height > hit.y && player.y - player.height < hit.y + hit.height) {
+            player.x = 200;
+            player.y = 400;
+        }
+}}
