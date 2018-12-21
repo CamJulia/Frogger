@@ -71,9 +71,9 @@ Player.prototype.render = function () {
 }
 
 // create enemies
-let enemy1 = new Enemy(55, -100, 5);
-let enemy2 = new Enemy(140, -200, 3);
-let enemy3 = new Enemy(225, -50, 4);
+let enemy1 = new Enemy(55, -100, 3);
+let enemy2 = new Enemy(140, -200, 1);
+let enemy3 = new Enemy(225, -50, 2);
 
 // put them in the allEnemies Array
 allEnemies.push(enemy1);
@@ -118,6 +118,7 @@ function win() {
     rounds += 1;
     player.y = 400;
     player.x = 200;
+    hurryBug();
     roundsOutput.textContent = rounds;
 }
 
@@ -131,3 +132,10 @@ function collisionDetection() {
         }
     }
 }
+
+// speed up the bugs
+function hurryBug() {
+    for (let i = 0; i < allEnemies.length; i++) {
+        let hit = allEnemies[i];
+        hit.fast += 1;
+    }}
