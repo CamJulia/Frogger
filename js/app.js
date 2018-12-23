@@ -2,9 +2,10 @@
 let player;
 let heart;
 let gem;
+let key;
 let allEnemies = [];
 
-// key controls
+// keyboard controls
 let rightPressed = false;
 let leftPressed = false;
 let downPressed = false;
@@ -20,8 +21,8 @@ const roundsOutput = document.getElementById('rounds');
 showLife();
 
 // the bugs
-let Enemy = function (lane, start, fast) {
-    this.x = start;
+let Enemy = function (lane, fast) {
+    this.x = -130;
     this.y = lane;
     this.fast = fast;
     this.height = 25;
@@ -34,7 +35,7 @@ Enemy.prototype.update = function (dt) {
     if (this.x < 500) {
         this.x = this.x + this.fast;
     } else {
-        this.x = -100;
+        this.x = -130;
     }
 }
 
@@ -44,9 +45,9 @@ Enemy.prototype.render = function () {
 }
 
 // create bugs
-let enemy1 = new Enemy(55, -100, 3);
-let enemy2 = new Enemy(140, -200, 1);
-let enemy3 = new Enemy(225, -50, 2);
+let enemy1 = new Enemy(55, 3);
+let enemy2 = new Enemy(140, 1);
+let enemy3 = new Enemy(225, 2);
 
 // put bugs in the allEnemies Array
 allEnemies.push(enemy1);
@@ -79,8 +80,6 @@ Player.prototype.update = function (dt) {
     if (player.y === -30) {
         win();
     }
-
-    collectionDetection(heart);
 }
 
 // draw player
@@ -101,7 +100,6 @@ let Heart = function () {
     this.height = 45;
 }
 
-
 // draw heart
 Heart.prototype.render = function (dt) {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -109,8 +107,6 @@ Heart.prototype.render = function (dt) {
 
 // check if heart is collected
 Heart.prototype.update = function () {
-
-    
     collectionDetection(heart);
 }
 
@@ -127,7 +123,6 @@ let Gem = function () {
     this.height = 30;
 }
 
-
 // draw Gem
 Gem.prototype.render = function (dt) {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -135,13 +130,34 @@ Gem.prototype.render = function (dt) {
 
 // check if Gem is collected
 Gem.prototype.update = function () {
-
-    
     collectionDetection(gem);
 }
 
 // call Gem
 gem = new Gem();
+
+// Key
+let Key = function () {
+    this.sprite = 'images/Key.png';
+    this.show = Math.floor(Math.random() * Math.floor(400));
+    this.x = -100;
+    this.y = 170;
+    this.width = 30;
+    this.height = 30;
+}
+
+// draw Key
+Key.prototype.render = function (dt) {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+// check if Key is collected
+Key.prototype.update = function () {
+    collectionDetection(key);
+}
+
+// call Key
+key = new Key();
 
 // play again after game over
 let again = document.getElementById('again');
@@ -185,17 +201,18 @@ function keyUpHandler(e) {
 function win() {
     rounds++;
     roundsOutput.textContent = rounds;
+    hideItem(heart);
+    hideItem(gem);
+    hideItem(key);
 
-    // show heart
+    // show heart, gem, key
     if (rounds % 7 === 0) {
         showItem(heart);
-    }
-    // show gem
-    if (rounds % 5 === 0) {
+    } else if (rounds % 4 === 0) {
         showItem(gem);
+    } else if (rounds % 10 === 0) {
+        showItem(key);
     }
-
-
 
     // ask player to go outside when 50 rounds are played
     if (rounds > 0 && (rounds % 50) === 0) {
@@ -204,11 +221,6 @@ function win() {
     player.y = 400;
     player.x = 200;
     hurryBug();
-
-    // if (rounds === 2) {
-    //     heartNow = true;
-    //     console.log(heartNow);
-    // }
 }
 
 // checks if player is hit
@@ -244,10 +256,27 @@ function collectionDetection(item) {
             lifes = lifes + 1;
             showLife();
         }
+
         // check if collected item is gem
         if (item === gem) {
             // slow bugs
             slowBug();
+        }
+
+        // check if collected item is gem
+        if (item === key) {
+            // release the bugs
+            let i = allEnemies.length;
+            if (i % 3 === 0) {
+                let enemy = new Enemy(140, 2);
+                allEnemies.push(enemy);
+            } else if (i % 2 === 0) {
+                let enemy = new Enemy(55, 2);
+                allEnemies.push(enemy);
+            } else {
+                let enemy = new Enemy(255, 2);
+                allEnemies.push(enemy);
+            }
         }
     }
 }
@@ -264,7 +293,7 @@ function hurryBug() {
 function slowBug() {
     for (let i = 0; i < allEnemies.length; i++) {
         let hit = allEnemies[i];
-        hit.fast = hit.fast/2;
+        hit.fast = hit.fast / 2;
     }
 }
 
