@@ -1,6 +1,7 @@
 // player, enemies, items
 let player;
 let heart;
+let gem;
 let allEnemies = [];
 
 // key controls
@@ -84,7 +85,6 @@ Player.prototype.update = function (dt) {
 
 // draw player
 Player.prototype.render = function () {
-    Resources.load(this.sprite);
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
@@ -104,7 +104,6 @@ let Heart = function () {
 
 // draw heart
 Heart.prototype.render = function (dt) {
-    Resources.load(this.sprite);
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
@@ -117,6 +116,32 @@ Heart.prototype.update = function () {
 
 // call Heart
 heart = new Heart();
+
+// Gem
+let Gem = function () {
+    this.sprite = 'images/Gem Orange.png';
+    this.show = Math.floor(Math.random() * Math.floor(400));
+    this.x = -100;
+    this.y = 170;
+    this.width = 30;
+    this.height = 30;
+}
+
+
+// draw Gem
+Gem.prototype.render = function (dt) {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+// check if Gem is collected
+Gem.prototype.update = function () {
+
+    
+    collectionDetection(gem);
+}
+
+// call Gem
+gem = new Gem();
 
 // play again after game over
 let again = document.getElementById('again');
@@ -161,10 +186,16 @@ function win() {
     rounds++;
     roundsOutput.textContent = rounds;
 
-    // show items
+    // show heart
     if (rounds % 7 === 0) {
         showItem(heart);
     }
+    // show gem
+    if (rounds % 5 === 0) {
+        showItem(gem);
+    }
+
+
 
     // ask player to go outside when 50 rounds are played
     if (rounds > 0 && (rounds % 50) === 0) {
@@ -174,10 +205,10 @@ function win() {
     player.x = 200;
     hurryBug();
 
-    if (rounds === 2) {
-        heartNow = true;
-        console.log(heartNow);
-    }
+    // if (rounds === 2) {
+    //     heartNow = true;
+    //     console.log(heartNow);
+    // }
 }
 
 // checks if player is hit
@@ -207,11 +238,16 @@ function collectionDetection(item) {
     if (player.x + player.width > item.x && player.x - player.width < item.x + item.width && player.y + player.height > item.y && player.y - player.height < item.y + item.height) {
         hideItem(item);
 
-        // check what item is collected
+        // check if collected item is a heart
         if (item === heart && lifes < 5) {
             // add one life
             lifes = lifes + 1;
             showLife();
+        }
+        // check if collected item is gem
+        if (item === gem) {
+            // slow bugs
+            slowBug();
         }
     }
 }
@@ -221,6 +257,14 @@ function hurryBug() {
     for (let i = 0; i < allEnemies.length; i++) {
         let hit = allEnemies[i];
         hit.fast += 1;
+    }
+}
+
+// slow down the bugs
+function slowBug() {
+    for (let i = 0; i < allEnemies.length; i++) {
+        let hit = allEnemies[i];
+        hit.fast = hit.fast/2;
     }
 }
 
