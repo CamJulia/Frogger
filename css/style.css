@@ -6,7 +6,7 @@ body {
 #stats {
     display: flex;
     justify-content: space-between;
-    width: 50%;
+    width: 505px;
     margin: 3em auto -3em auto;
 }
 

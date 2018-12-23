@@ -1,17 +1,24 @@
+// player, enemies, items
 let player;
+let heart;
 let allEnemies = [];
+
+// key controls
 let rightPressed = false;
 let leftPressed = false;
 let downPressed = false;
 let upPressed = false;
+
+// stats
 let lifes = 3;
 let rounds = 0;
 const hearts = document.getElementById('hearts');
 const roundsOutput = document.getElementById('rounds');
 
+// check lifes left & display hearts
 showLife();
 
-// Enemies
+// the bugs
 let Enemy = function (lane, start, fast) {
     this.x = start;
     this.y = lane;
@@ -19,25 +26,31 @@ let Enemy = function (lane, start, fast) {
     this.height = 25;
     this.width = 45;
     this.sprite = 'images/enemy-bug.png';
-};
+}
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
+// move the bugs
 Enemy.prototype.update = function (dt) {
     if (this.x < 500) {
         this.x = this.x + this.fast;
     } else {
         this.x = -100;
     }
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
-};
+}
 
-// draw enemy
+// draw bugs
 Enemy.prototype.render = function () {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
+}
+
+// create bugs
+let enemy1 = new Enemy(55, -100, 3);
+let enemy2 = new Enemy(140, -200, 1);
+let enemy3 = new Enemy(225, -50, 2);
+
+// put bugs in the allEnemies Array
+allEnemies.push(enemy1);
+allEnemies.push(enemy2);
+allEnemies.push(enemy3);
 
 // Player
 let Player = function () {
@@ -49,7 +62,7 @@ let Player = function () {
 }
 
 // move the player around
-Player.prototype.update = function () {
+Player.prototype.update = function (dt) {
     if (rightPressed && player.x < 410) {
         player.x += 5;
     } else if (leftPressed && player.x > 0) {
@@ -59,43 +72,63 @@ Player.prototype.update = function () {
     } else if (downPressed && player.y < 400) {
         player.y += 5;
     }
+
     // check if player is hit
     collisionDetection();
     if (player.y === -30) {
         win();
     }
+
+    collectionDetection(heart);
 }
 
 // draw player
 Player.prototype.render = function () {
-    Resources.load(this.sprite)
+    Resources.load(this.sprite);
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
-
-// create enemies
-let enemy1 = new Enemy(55, -100, 3);
-let enemy2 = new Enemy(140, -200, 1);
-let enemy3 = new Enemy(225, -50, 2);
-
-// put them in the allEnemies Array
-allEnemies.push(enemy1);
-allEnemies.push(enemy2);
-allEnemies.push(enemy3);
 
 // Place the player object in a variable called player
 player = new Player();
 
-// listen for keyboard events
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
+// Heart
+let Heart = function () {
+    this.sprite = 'images/Heart.png';
+    this.show = Math.floor(Math.random() * Math.floor(400));
+    this.x = -100;
+    this.y = 170;
+    this.width = 25;
+    this.height = 45;
+}
+
+
+// draw heart
+Heart.prototype.render = function (dt) {
+    Resources.load(this.sprite);
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+// check if heart is collected
+Heart.prototype.update = function () {
+
+    
+    collectionDetection(heart);
+}
+
+// call Heart
+heart = new Heart();
 
 // play again after game over
 let again = document.getElementById('again');
 again.addEventListener("click", reload);
 
 // play some more after 50, 100... games
- let more = document.getElementById('more');
- more.addEventListener("click", overlayOff);
+let more = document.getElementById('more');
+more.addEventListener("click", overlayOff);
+
+// listen for keyboard events
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
 
 // keys are pressed
 function keyDownHandler(e) {
@@ -123,18 +156,28 @@ function keyUpHandler(e) {
     }
 }
 
-// in case of win
+// in case of reaching the water
 function win() {
     rounds++;
     roundsOutput.textContent = rounds;
 
+    // show items
+    if (rounds % 7 === 0) {
+        showItem(heart);
+    }
+
     // ask player to go outside when 50 rounds are played
     if (rounds > 0 && (rounds % 50) === 0) {
-        overlayOn('win');  
+        overlayOn('win');
     }
     player.y = 400;
     player.x = 200;
     hurryBug();
+
+    if (rounds === 2) {
+        heartNow = true;
+        console.log(heartNow);
+    }
 }
 
 // checks if player is hit
@@ -159,6 +202,20 @@ function collisionDetection() {
     }
 }
 
+// checks if player reaches item
+function collectionDetection(item) {
+    if (player.x + player.width > item.x && player.x - player.width < item.x + item.width && player.y + player.height > item.y && player.y - player.height < item.y + item.height) {
+        hideItem(item);
+
+        // check what item is collected
+        if (item === heart && lifes < 5) {
+            // add one life
+            lifes = lifes + 1;
+            showLife();
+        }
+    }
+}
+
 // speed up the bugs
 function hurryBug() {
     for (let i = 0; i < allEnemies.length; i++) {
@@ -179,17 +236,25 @@ function showLife() {
 
 // show overlay
 function overlayOn(id) {
-    console.log("ON");
     document.getElementById(id).style.display = "block";
 }
 
 // hide overlay
 function overlayOff() {
-    console.log("OFF");
     document.getElementById('win').style.display = "none";
 }
 
 // reload page
 function reload() {
     document.location.reload();
+}
+
+// show item
+function showItem(item) {
+    item.x = item.show;
+}
+
+// hide item
+function hideItem(item) {
+    item.x = -100;
 }
