@@ -1,0 +1,28 @@
+{
+  "name": "frogger",
+  "version": "1.0.0",
+  "description": "my frogger game",
+  "main": "app.js",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^5.11.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BarbarBetsy/Frogger.git"
+  },
+  "keywords": [
+    "frogger"
+  ],
+  "author": "barbarbetsy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BarbarBetsy/Frogger/issues"
+  },
+  "homepage": "https://github.com/BarbarBetsy/Frogger#readme"
+}
