@@ -5,8 +5,12 @@ This is a Classic Arcade Game Clone and my 3rd project for the Udacity front-end
 ## Dependencies
 None.
 
+## How to get it started locally
+Open the index.html file in your favorite browser and you are ready to go.
+
 ## How to play
-- get the little cat girl to the water
+- use the arrow keys to move the little cat girl around
+- the goal is to reach the water on the other side of the road
 - do not run into the busy bugs
 - collect hearts to gain lifes (up to 5)
 - collect gems to slow down the bugs
