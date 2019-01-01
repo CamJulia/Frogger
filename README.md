@@ -16,6 +16,8 @@ Open the index.html file in your favorite browser and you are ready to go.
 - collect gems to slow down the bugs
 - collect keys to release some more bugs (or don't)
 
+![the Frogger Game in Action](images/Frogger-in-action.png)
+
 ## How it was build
 Engine.js, resources.js and some first lines of code in app.js were provided by Udacity. The rest was carefully crafted by me using only plain JS.
 
